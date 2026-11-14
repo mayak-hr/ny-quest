@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#143139">
+<title>12 огней маяка</title>
+<script>
+/* ===== НАСТРОЙКА: вставьте сюда адрес веб-приложения Apps Script (заканчивается на /exec) ===== */
+window.MAYAK_CONFIG = window.MAYAK_CONFIG || {
+  apiUrl: 'ВСТАВЬТЕ_СЮДА_АДРЕС_ВЕБ_ПРИЛОЖЕНИЯ'
+};
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Neucha&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#143139; --teal:#39879E; --orange:#ED7C16; --white:#fff; --grey:#F5F5F5; --mint:#E7F0EB;
+  --teal-dark:#2B6A7D; --orange-dark:#C8650C; --ok:#2E7D4F; --bad:#B23A2E; --muted:#5A6E74;
+  --r:22px; --r-sm:14px;
+  --hand:'Neucha',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  --body:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--mint);color:var(--navy);font:17px/1.45 var(--body);min-height:100vh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+button,input{font:inherit;color:inherit}
+a{color:var(--teal-dark)}
+.wrap{max-width:560px;margin:0 auto;padding:12px 14px 40px}
+header.top{display:flex;align-items:center;gap:10px;padding:8px 14px;max-width:560px;margin:0 auto}
+header.top img{width:44px;height:52px;object-fit:contain}
+header.top .ttl{font-family:var(--hand);font-size:24px;line-height:1.05;flex:1}
+header.top .ttl small{display:block;font-family:var(--body);font-size:13px;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:10px 18px;border-radius:999px;border:2px solid var(--navy);background:var(--orange);color:#fff;font-weight:700;cursor:pointer;text-decoration:none;text-align:center;touch-action:manipulation}
+.btn:focus-visible,.chip:focus-visible,.cell:focus-visible,.opt:focus-visible,.card-btn:focus-visible,.tile:focus-visible,.mem:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+.btn.sec{background:#fff;color:var(--navy)}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--teal-dark);text-decoration:underline;min-height:44px;padding:6px 8px;font-weight:600}
+.btn.small{min-height:44px;padding:6px 14px;font-size:15px}
+.btn.wide{width:100%}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.btn.hl{box-shadow:0 0 0 4px rgba(237,124,22,.35)}
+.icon-btn{min-height:44px;min-width:44px;border-radius:999px;border:2px solid var(--navy);background:#fff;font-weight:700;padding:6px 12px;cursor:pointer;font-size:14px}
+.card{background:#fff;border-radius:var(--r);padding:18px;margin:12px 0;border:2px solid rgba(20,49,57,.08)}
+.card.mint{background:var(--mint)}
+.card.navy{background:var(--navy);color:#fff}
+h1,h2,h3{font-family:var(--hand);font-weight:400;line-height:1.1;margin:0 0 10px;letter-spacing:.3px}
+h1{font-size:34px} h2{font-size:28px} h3{font-size:23px}
+.caps{font-family:var(--hand);text-transform:uppercase;letter-spacing:1px}
+p{margin:0 0 10px}
+.muted{color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;background:var(--mint);color:var(--navy);font-size:14px;font-weight:600;border:0}
+.chip.orange{background:#FCE3CC} .chip.teal{background:#D5EAF0} .chip.navy{background:var(--navy);color:#fff}
+.field{margin:0 0 12px}
+.field label{display:block;font-weight:700;margin-bottom:4px}
+.field input{width:100%;min-height:52px;border-radius:var(--r-sm);border:2px solid var(--navy);padding:10px 14px;background:#fff;font-size:18px}
+.field input:focus{outline:3px solid var(--teal);outline-offset:1px}
+.field .hint{font-size:14px;color:var(--muted);margin-top:4px}
+.msg{padding:10px 14px;border-radius:var(--r-sm);margin:10px 0;font-weight:600}
+.msg.ok{background:#DDF0E4;color:var(--ok)} .msg.bad{background:#F8E0DC;color:var(--bad)} .msg.info{background:var(--mint)} .msg.warn{background:#FCE3CC;color:#7A3D05}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row > .btn{flex:1 1 auto}
+.stack > * + *{margin-top:10px}
+.demo-ribbon{background:var(--orange);color:#fff;text-align:center;font-weight:700;padding:6px 10px;font-size:14px}
+.net-ribbon{background:var(--navy);color:#fff;text-align:center;padding:6px 10px;font-size:14px}
+footer.bottom{max-width:560px;margin:0 auto;padding:8px 14px 30px;display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:center}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Огни на главной */
+.lights{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:10px 0}
+.light{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;border:2px dashed #9DB3B8;color:#7D9297;background:#fff}
+.light.found{border:2px solid var(--teal);color:var(--teal-dark)}
+.light.done{background:var(--orange);border:2px solid var(--navy);color:#fff;box-shadow:0 0 0 5px rgba(237,124,22,.25)}
+.list{display:grid;gap:10px}
+.gcard{display:flex;gap:12px;align-items:flex-start;background:#fff;border-radius:var(--r);padding:14px;border:2px solid rgba(20,49,57,.08);text-decoration:none;color:inherit}
+.gcard .num{flex:0 0 46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;border:2px dashed #9DB3B8;color:#7D9297}
+.gcard.found .num{border:2px solid var(--teal);color:var(--teal-dark)}
+.gcard.done .num{background:var(--orange);color:#fff;border:2px solid var(--navy)}
+.gcard .t{font-weight:700;font-size:18px}
+.gcard .s{font-size:15px;color:var(--muted)}
+.gcard.locked{background:#FAFBFB}
+button.gcard{width:100%;text-align:left;font:inherit;cursor:pointer}
+
+/* Общие игровые элементы */
+.q{border:2px solid rgba(20,49,57,.12);border-radius:var(--r);padding:14px;margin:12px 0;background:#fff}
+.q.solved{border-color:var(--ok);background:#F3FAF5}
+.q.skipped{border-style:dashed;background:#FAFBFB}
+.q .qtext{font-size:19px;margin-bottom:10px;white-space:pre-line}
+.q .emoji{font-size:34px;line-height:1.3;letter-spacing:2px;text-align:center;margin:6px 0 4px}
+.boxes{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:4px 0 10px}
+.boxes .w{display:flex;gap:2px}
+.boxes .w i{width:13px;height:16px;border:1.5px solid var(--navy);border-radius:3px;display:block}
+.hintbox{background:#FCE3CC;border-radius:var(--r-sm);padding:10px 12px;margin:8px 0;font-size:16px}
+.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.confirm{background:var(--mint);border-radius:var(--r-sm);padding:10px;margin-top:8px}
+
+/* Память */
+.mem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mem{aspect-ratio:1/1.05;border-radius:var(--r-sm);border:2px solid var(--navy);background:var(--teal);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;position:relative;touch-action:manipulation}
+.mem .back{width:60%;opacity:.9}
+.mem.open,.mem.done{background:#fff}
+.mem.done{border-color:var(--ok);background:#F3FAF5}
+.mem svg.ic{width:62%;height:auto}
+.mem .lb{font-size:13px;font-weight:700;margin-top:2px}
+
+/* Пазл */
+.puz{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;background:var(--navy);border:3px solid var(--navy);border-radius:var(--r-sm);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+.tile{display:block;padding:0;border:0;background:#fff;cursor:pointer;position:relative;aspect-ratio:4/3}
+.tile svg{display:block;width:100%;height:100%}
+.tile.sel{outline:4px solid var(--orange);outline-offset:-4px;z-index:1}
+.tile.right::after{content:'';position:absolute;inset:0;box-shadow:inset 0 0 0 2px rgba(46,125,79,.0)}
+
+/* Отличия */
+.scene-box{position:relative;border:3px solid var(--navy);border-radius:var(--r-sm);overflow:hidden;background:#fff;margin:6px 0}
+.scene-box svg{display:block;width:100%;height:auto}
+.scene-label{font-weight:700;font-size:14px;margin-top:8px}
+.zoomwrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.zoomwrap.zoom .scene-box{width:165%}
+
+/* Выбор */
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.opt{min-height:64px;border-radius:var(--r-sm);border:2px solid var(--navy);background:#fff;font-weight:700;font-size:18px;cursor:pointer;padding:8px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;touch-action:manipulation}
+.opt.right{background:#DDF0E4;border-color:var(--ok)}
+.opt.wrong{background:#F8E0DC;border-color:var(--bad)}
+.opt svg{max-width:100%;height:56px}
+.seq{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;background:var(--mint);border-radius:var(--r-sm);padding:10px;margin:8px 0}
+.seq svg{height:56px;width:auto}
+.seq .qm{font-family:var(--hand);font-size:40px;width:48px;text-align:center;border:2px dashed var(--navy);border-radius:10px;line-height:52px}
+.progress-dots{display:flex;gap:6px;justify-content:center;margin:6px 0}
+.progress-dots i{width:12px;height:12px;border-radius:50%;background:#C9D6D9;display:block}
+.progress-dots i.on{background:var(--teal)} .progress-dots i.cur{background:var(--orange)}
+
+/* Филворд */
+.wgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;touch-action:none;user-select:none;-webkit-user-select:none;max-width:420px;margin:0 auto}
+.cell{aspect-ratio:1;border-radius:10px;border:2px solid rgba(20,49,57,.25);background:#fff;font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;touch-action:none}
+.cell.sel{background:#FCE3CC;border-color:var(--orange)}
+.cell.path{background:#FFF1E3}
+.cell.found{background:var(--teal);color:#fff;border-color:var(--teal-dark)}
+.cell.hinted{box-shadow:0 0 0 3px var(--orange) inset}
+.words{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.word{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:var(--mint);font-weight:700}
+.word.found{background:#DDF0E4;text-decoration:line-through;color:var(--ok)}
+
+/* Лабиринт */
+.maze-box{border:3px solid var(--navy);border-radius:var(--r-sm);background:#D5EAF0;overflow:hidden;max-width:420px;margin:0 auto}
+.maze-box svg{display:block;width:100%;height:auto;touch-action:manipulation}
+.pad{display:grid;grid-template-columns:repeat(3,72px);grid-template-rows:repeat(2,64px);gap:8px;justify-content:center;margin:14px 0}
+.pad button{border-radius:var(--r-sm);border:2px solid var(--navy);background:#fff;font-size:28px;font-weight:800;cursor:pointer;touch-action:manipulation}
+.pad .up{grid-column:2;grid-row:1}.pad .left{grid-column:1;grid-row:2}.pad .down{grid-column:2;grid-row:2}.pad .right{grid-column:3;grid-row:2}
+.wiggle{animation:shake .3s}
+
+/* Гномики */
+.gnomes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gnome{background:#fff;border:2px solid rgba(20,49,57,.12);border-radius:var(--r);padding:8px;text-align:center;cursor:pointer;position:relative;font:inherit}
+.gnome svg{width:100%;height:auto;max-height:180px;transform-origin:50% 90%}
+.gnome .lb{font-weight:700;font-size:15px}
+.bubble{background:var(--navy);color:#fff;border-radius:16px;padding:8px 10px;font-size:15px;margin-top:6px}
+.dance-sway svg{animation:sway 1s ease-in-out 3}
+.dance-spin svg{animation:spin 1.2s ease-in-out 2}
+.dance-hop svg{animation:hop .5s ease-in-out 5}
+.dance-wave svg{animation:wave .8s ease-in-out 3}
+@keyframes sway{0%,100%{transform:rotate(0)}25%{transform:rotate(-9deg)}75%{transform:rotate(9deg)}}
+@keyframes spin{0%{transform:rotateY(0)}100%{transform:rotateY(360deg)}}
+@keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes wave{0%,100%{transform:skewX(0)}50%{transform:skewX(-7deg) translateX(4px)}}
+
+/* Бутылки */
+.sea{position:relative;background:linear-gradient(#E7F0EB 0 45%,#39879E 45% 100%);border-radius:var(--r);border:3px solid var(--navy);padding:16px 8px 22px;display:flex;justify-content:space-around;align-items:flex-end;min-height:190px;overflow:hidden}
+.bottle{background:none;border:0;padding:0;cursor:pointer;width:17%;animation:bob 3s ease-in-out infinite}
+.bottle:nth-child(2){animation-delay:.6s}.bottle:nth-child(3){animation-delay:1.2s}.bottle:nth-child(4){animation-delay:1.8s}.bottle:nth-child(5){animation-delay:2.4s}
+.bottle svg{width:100%;height:auto}
+.bottle.opened{opacity:.35}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-8px) rotate(6deg)}}
+.letter{background:#FFFBF2;border:2px solid var(--navy);border-radius:var(--r);padding:20px;margin:14px 0;font-size:20px;font-family:var(--hand);line-height:1.35;position:relative;animation:unroll .6s ease-out}
+@keyframes unroll{from{transform:scaleY(.1);opacity:0}to{transform:scaleY(1);opacity:1}}
+.beam{position:absolute;inset:0;pointer-events:none;background:linear-gradient(100deg,transparent 30%,rgba(237,124,22,.18) 50%,transparent 70%);animation:sweep 2.4s ease-in-out 1}
+@keyframes sweep{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+
+/* Результат */
+.result{text-align:center}
+.result .big{font-family:var(--hand);font-size:56px;line-height:1;color:var(--orange)}
+.save{display:flex;align-items:center;gap:8px;justify-content:center;font-weight:700;margin:10px 0}
+.save .dot{width:12px;height:12px;border-radius:50%;background:#C9D6D9}
+.save.saving .dot{background:var(--orange);animation:pulse 1s infinite}
+.save.saved .dot{background:var(--ok)}
+.save.queued .dot,.save.error .dot{background:var(--bad)}
+@keyframes pulse{50%{opacity:.3}}
+.codebox{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:28px;font-weight:800;letter-spacing:2px;background:#fff;border:3px dashed var(--orange);border-radius:var(--r-sm);padding:10px;text-align:center;margin:8px 0;user-select:all}
+.grid3{display:grid;grid-template-columns:auto repeat(3,1fr);gap:4px;max-width:360px;margin:8px auto}
+.grid3 b{font-size:14px;text-align:center}
+.grid3 button{min-height:44px;border-radius:10px;border:2px solid rgba(20,49,57,.25);background:#fff;font-size:20px;font-weight:800;cursor:pointer}
+table.pts{border-collapse:collapse;width:100%;font-size:15px;margin:8px 0}
+table.pts td,table.pts th{border-bottom:1px solid #D9E3E5;padding:6px 4px;text-align:left}
+
+/* Уменьшение движения */
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important} }
+body.rm *,body.rm *::before,body.rm *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}
+body.rm .bottle{animation:none}
+@media (max-width:360px){ body{font-size:16px} h1{font-size:30px} .cell{font-size:17px} .pad{grid-template-columns:repeat(3,64px)} }
+</style>
+</head>
+<body>
+<div id="ribbons"></div>
+<header class="top">
+  <img id="logo" alt="Дом с маяком" src="data:image/png;base64,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">
+  <div class="ttl"><span id="evTitle">12 огней маяка</span><small id="evSub">квест для сотрудников</small></div>
+  <button class="icon-btn" id="btnProgress" hidden>Мой прогресс</button>
+</header>
+<main class="wrap" id="app" aria-live="polite"><div class="card"><p>Загружаем…</p></div></main>
+<footer class="bottom" id="footer">
+  <button class="btn ghost" data-go="home">Все огни</button>
+  <button class="btn ghost" data-act="rules">Правила</button>
+  <button class="btn ghost" data-act="switch" id="btnSwitch" hidden>Это не я / сменить участника</button>
+  <button class="btn ghost" data-act="motion" id="btnMotion">Меньше движения: выкл</button>
+</footer>
+
+<script>
+(function () {
+'use strict';
+
+/* ================= Базовые утилиты ================= */
+const CFG = window.MAYAK_CONFIG || {};
+const GAS = typeof google !== 'undefined' && google.script && google.script.run;
+const DEMO = !!window.MAYAK_DEMO_BACKEND;
+const API_URL = String(CFG.apiUrl || '');
+const API_OK = /^https:\/\/script\.google\.com\/(a\/macros\/[\w.-]+|macros)\/s\/[\w-]+\/exec$/.test(API_URL) || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(API_URL);
+const NS = 'mayak.v1.';
+const $ = (s, el) => (el || document).querySelector(s);
+const $$ = (s, el) => Array.from((el || document).querySelectorAll(s));
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2)).replace(/-/g, '');
+
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(NS + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(NS + k, JSON.stringify(v)); } catch (e) { /* хранилище недоступно */ } },
+  del(k) { try { localStorage.removeItem(NS + k); } catch (e) { } },
+};
+
+const S = {
+  event: null, games: [], me: null, active: store.get('active', null),
+  route: { name: 'home' }, game: null, gstate: null, result: null,
+  online: navigator.onLine !== false, deviceId: store.get('device', null),
+  rm: store.get('rm', false),
+};
+if (!S.deviceId) { S.deviceId = uid(); store.set('device', S.deviceId); }
+const pkey = k => 'p.' + (S.active ? S.active.pid : 'anon') + '.' + k;
+
+/* ================= Связь с сервером ================= */
+function netError(msg) { const e = new Error(msg || 'net'); e.net = true; return e; }
+
+function rawCall(req) {
+  if (DEMO) return sleep(250).then(() => JSON.parse(JSON.stringify(window.MAYAK_DEMO_BACKEND.handle(req))));
+  if (GAS) return new Promise((resolve, reject) => google.script.run.withSuccessHandler(resolve).withFailureHandler(e => reject(netError(String(e)))).api(req));
+  if (!API_OK) return Promise.reject(Object.assign(new Error('Сайт ещё не подключён к Google Таблице.'), { config: true }));
+  const ctl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  const timer = setTimeout(() => ctl && ctl.abort(), 25000);
+  return fetch(API_URL, { method: 'POST', body: JSON.stringify(req), headers: { 'Content-Type': 'text/plain;charset=utf-8' }, redirect: 'follow', credentials: 'omit', signal: ctl ? ctl.signal : undefined })
+    .then(r => { if (!r.ok) throw netError('HTTP ' + r.status); return r.json(); })
+    .catch(e => { throw e && e.net ? e : netError(e && e.message); })
+    .finally(() => clearTimeout(timer));
+}
+
+const RETRIABLE = ['busy', 'rate_limited', 'server_error'];
+async function call(req, opts) {
+  opts = opts || {};
+  const tries = opts.tries == null ? 3 : opts.tries;
+  let last;
+  for (let i = 0; i < tries; i++) {
+    try {
+      const res = await rawCall(req);
+      setOnline(true);
+      if (res && res.ok === false && RETRIABLE.includes(res.error) && i < tries - 1) { last = res; await sleep(1500 * (i + 1)); continue; }
+      return res;
+    } catch (e) {
+      if (e.config) throw e;
+      last = e; setOnline(false);
+      if (i < tries - 1) await sleep(1200 * (i + 1));
+    }
+  }
+  if (last instanceof Error) throw last;
+  return last;
+}
+
+function setOnline(v) {
+  if (S.online === v) return;
+  S.online = v; ribbons();
+}
+
+/* ================= Очередь неотправленных результатов ================= */
+const outbox = {
+  all() { return store.get('outbox', []); },
+  save(list) { store.set('outbox', list); },
+  add(item) { const l = outbox.all().filter(x => x.id !== item.id); l.push(item); outbox.save(l); },
+  remove(id) { outbox.save(outbox.all().filter(x => x.id !== id)); },
+  pendingFor(pid) { return outbox.all().filter(x => x.pid === pid); },
+};
+let flushing = false;
+async function flushOutbox() {
+  if (flushing) return; flushing = true;
+  try {
+    for (const item of outbox.all()) {
+      let res;
+      try { res = await call(item.req, { tries: 1 }); } catch (e) { break; }
+      if (res && (res.ok || !RETRIABLE.includes(res.error))) {
+        outbox.remove(item.id);
+        if (res.ok && S.active && item.pid === S.active.pid && res.me) S.me = res.me;
+        if (S.result && S.result.attemptId === item.id) { S.result.save = res.ok ? 'saved' : 'error'; S.result.server = res; renderResultSave(); }
+      }
+    }
+  } finally { flushing = false; ribbons(); }
+}
+window.addEventListener('online', () => { setOnline(true); flushOutbox(); });
+window.addEventListener('offline', () => setOnline(false));
+setInterval(() => { if (outbox.all().length) flushOutbox(); }, 30000);
+
+/* ================= Иллюстрации (в стиле бренд-бука) ================= */
+const C = { n: '#143139', t: '#39879E', o: '#ED7C16', w: '#fff', m: '#E7F0EB', g: '#F5F5F5' };
+const SW = 'stroke="#143139" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"';
+
+function bayScene(v) {
+  // v: 'a' — исходная сцена, 'b' — с изменениями (для «Найди отличия»). Координаты отличий совпадают с зонами на сервере.
+  const b = v === 'b';
+  return `<svg viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Бухта с маяком">
+  <rect width="320" height="240" fill="${C.m}"/>
+  <g fill="${C.w}" ${SW}><path d="M14 30 q4 -12 14 -8 q6 -10 16 -2 q10 -2 10 8 q0 6 -8 6 h-28 q-8 0 -4 -4z"/></g>
+  <circle cx="150" cy="40" r="13" fill="${C.w}" ${SW}/>
+  <g fill="${C.n}"><circle cx="110" cy="22" r="2"/><circle cx="190" cy="60" r="2"/><circle cx="292" cy="96" r="2"/><circle cx="20" cy="110" r="2"/><circle cx="178" cy="18" r="2"/><circle cx="96" cy="70" r="1.6"/><circle cx="300" cy="30" r="1.6"/></g>
+  ${b ? `<path d="M58 60 q7 -9 14 0 q7 -9 14 0" fill="none" ${SW}/>` : ''}
+  <path d="M0 190 H320 V240 H0Z" fill="${C.t}"/>
+  <g fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".9"><path d="M10 205 q8 -5 16 0 q8 5 16 0"/><path d="M120 222 q8 -5 16 0 q8 5 16 0"/><path d="M250 214 q8 -5 16 0 q8 5 16 0"/><path d="M40 230 q8 -5 16 0"/></g>
+  <path d="M100 196 q20 -26 60 -28 h160 V196Z" fill="${C.g}" ${SW}/>
+  <g>
+    <path d="M30 186 h56 l-8 13 h-40z" fill="${C.w}" ${SW}/>
+    <line x1="56" y1="186" x2="56" y2="140" ${SW}/>
+    <path d="M58 144 L80 182 H58Z" fill="${b ? C.o : C.w}" ${SW}/>
+    <path d="M54 150 L36 182 H54Z" fill="${C.w}" ${SW}/>
+  </g>
+  ${b ? '' : `<rect x="120" y="98" width="12" height="28" fill="${C.w}" ${SW}/>`}
+  <rect x="116" y="150" width="68" height="36" fill="${C.w}" ${SW}/>
+  <path d="M108 152 L120 124 H180 L192 152Z" fill="${b ? C.t : C.o}" ${SW}/>
+  <rect x="126" y="160" width="15" height="13" fill="${C.t}" ${SW}/>
+  <rect x="160" y="163" width="14" height="23" fill="${C.t}" ${SW}/>
+  <path d="M222 188 L231 74 H255 L264 188Z" fill="${C.w}" ${SW}/>
+  <line x1="227" y1="120" x2="259" y2="120" ${SW}/>
+  <rect x="227" y="54" width="32" height="20" fill="${C.t}" ${SW}/>
+  <line x1="237" y1="54" x2="237" y2="74" ${SW}/><line x1="249" y1="54" x2="249" y2="74" ${SW}/>
+  <path d="M222 54 L243 38 L264 54Z" fill="${C.o}" ${SW}/>
+  <line x1="243" y1="38" x2="243" y2="31" ${SW}/>
+  ${b ? `<line x1="243" y1="31" x2="243" y2="10" ${SW}/><path d="M243 11 L264 17 L243 23Z" fill="${C.o}" ${SW}/>` : ''}
+  <rect x="236" y="150" width="14" height="20" rx="7" fill="${C.t}" ${SW}/>
+  </svg>`;
+}
+
+const ICONS = {
+  mayak: `<path d="M24 58 L28 20 H40 L44 58Z" fill="#fff" ${SW}/><rect x="27" y="10" width="14" height="10" fill="${C.t}" ${SW}/><path d="M24 10 L34 3 L44 10Z" fill="${C.o}" ${SW}/>`,
+  house: `<rect x="14" y="30" width="36" height="26" fill="#fff" ${SW}/><path d="M9 32 L17 14 H47 L55 32Z" fill="${C.o}" ${SW}/><rect x="20" y="37" width="9" height="8" fill="${C.t}" ${SW}/><rect x="36" y="40" width="8" height="16" fill="${C.t}" ${SW}/>`,
+  mug: `<path d="M14 18 H44 V48 q0 8 -8 8 H22 q-8 0 -8 -8Z" fill="#fff" ${SW}/><path d="M44 26 q12 0 12 10 q0 10 -12 10" fill="none" ${SW}/><path d="M29 44 q-10 -7 -6 -13 q4 -5 6 1 q2 -6 6 -1 q4 6 -6 13z" fill="${C.o}" stroke="${C.n}" stroke-width="2"/>`,
+  boat: `<path d="M8 44 H56 L48 56 H16Z" fill="#fff" ${SW}/><line x1="32" y1="44" x2="32" y2="8" ${SW}/><path d="M34 10 L52 40 H34Z" fill="${C.o}" ${SW}/><path d="M30 16 L16 40 H30Z" fill="#fff" ${SW}/>`,
+  anchor: `<circle cx="32" cy="12" r="5" fill="#fff" ${SW}/><line x1="32" y1="17" x2="32" y2="54" ${SW}/><line x1="20" y1="26" x2="44" y2="26" ${SW}/><path d="M12 38 q4 18 20 16 q16 2 20 -16" fill="none" ${SW}/><path d="M8 42 L12 36 L17 41" fill="none" ${SW}/><path d="M56 42 L52 36 L47 41" fill="none" ${SW}/>`,
+  gull: `<path d="M6 34 q13 -18 26 0 q13 -18 26 0" fill="none" stroke="${C.n}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="36" r="3" fill="${C.o}"/>`,
+};
+const icon = id => `<svg class="ic" viewBox="0 0 64 64" aria-hidden="true">${ICONS[id] || ''}</svg>`;
+const BACK = `<svg class="back" viewBox="0 0 64 64" aria-hidden="true"><path d="M24 58 L28 22 H40 L44 58Z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><rect x="27" y="12" width="14" height="10" fill="none" stroke="#fff" stroke-width="3"/><path d="M24 12 L34 5 L44 12Z" fill="#fff"/></svg>`;
+
+function gnomeSvg(i, photo) {
+  const shirt = i % 2 ? C.t : C.o;
+  const face = photo
+    ? `<defs><clipPath id="gc${i}"><circle cx="60" cy="74" r="20"/></clipPath></defs><image href="${esc(photo)}" x="40" y="54" width="40" height="40" preserveAspectRatio="xMidYMid slice" clip-path="url(#gc${i})"/><circle cx="60" cy="74" r="20" fill="none" ${SW}/>`
+    : `<circle cx="60" cy="74" r="20" fill="#fff" ${SW}/><circle cx="53" cy="72" r="2.2" fill="${C.n}"/><circle cx="67" cy="72" r="2.2" fill="${C.n}"/><path d="M54 80 q6 5 12 0" fill="none" ${SW}/><circle cx="60" cy="76" r="3" fill="${C.o}" opacity=".6"/>`;
+  return `<svg viewBox="0 0 120 170" aria-hidden="true">
+    <path d="M36 62 L60 6 L84 62Z" fill="${i % 2 ? C.o : C.t}" ${SW}/><circle cx="60" cy="8" r="5" fill="#fff" ${SW}/>
+    <path d="M34 120 q-2 -26 26 -30 q28 4 26 30 v26 H34Z" fill="${shirt === C.o ? '#fff' : '#fff'}" ${SW}/>
+    <g stroke="${shirt}" stroke-width="5"><line x1="36" y1="108" x2="84" y2="108"/><line x1="35" y1="120" x2="85" y2="120"/><line x1="34" y1="132" x2="86" y2="132"/></g>
+    <path d="M34 120 q-2 -26 26 -30 q28 4 26 30 v26 H34Z" fill="none" ${SW}/>
+    <path d="M44 86 q16 26 32 0 q-4 18 -16 22 q-12 -4 -16 -22z" fill="#fff" ${SW}/>
+    ${face}
+    <path d="M30 146 h26 v12 h-28z M64 146 h26 l2 12 h-28z" fill="${C.n}" ${SW}/>
+    <path d="M34 112 l-14 18" ${SW}/><path d="M86 112 l14 18" ${SW}/>
+  </svg>`;
+}
+
+function bottleSvg(i) {
+  return `<svg viewBox="0 0 40 90" aria-hidden="true"><rect x="15" y="4" width="10" height="10" rx="2" fill="#C99A62" ${SW}/><path d="M15 14 h10 v14 q12 6 12 20 v34 q0 4 -4 4 h-26 q-4 0 -4 -4 v-34 q0 -14 12 -20z" fill="${i % 2 ? '#BFE0E8' : '#D5EAF0'}" ${SW}/><rect x="12" y="44" width="16" height="22" rx="3" fill="#FFFBF2" stroke="${C.n}" stroke-width="2"/><line x1="15" y1="50" x2="25" y2="50" stroke="${C.n}" stroke-width="1.5"/><line x1="15" y1="55" x2="25" y2="55" stroke="${C.n}" stroke-width="1.5"/><line x1="15" y1="60" x2="22" y2="60" stroke="${C.n}" stroke-width="1.5"/></svg>`;
+}
+
+/* Визуальные элементы для «Продолжи узор» */
+function patternPiece(kind, code) {
+  if (kind === 'flags') {
+    const map = { o: [C.o, 'tri', 'оранжевый треугольный флажок'], t: [C.t, 'rect', 'бирюзовый прямоугольный флажок'], w: [C.w, 'tri', 'белый треугольный флажок'], n: [C.n, 'rect', 'тёмно-синий прямоугольный флажок'] };
+    const [col, shape, label] = map[code] || [C.g, 'rect', code];
+    const sh = shape === 'tri' ? `<path d="M8 8 H40 L24 44Z" fill="${col}" ${SW}/>` : `<rect x="9" y="8" width="30" height="34" fill="${col}" ${SW}/>`;
+    return `<svg viewBox="0 0 48 52" role="img" aria-label="${label}"><line x1="0" y1="8" x2="48" y2="8" ${SW}/>${sh}</svg>`;
+  }
+  if (kind === 'beam') {
+    const ang = { up: -90, right: 0, down: 90, left: 180 }[code] || 0;
+    const label = { up: 'луч вверх', right: 'луч вправо', down: 'луч вниз', left: 'луч влево' }[code] || code;
+    return `<svg viewBox="0 0 56 56" role="img" aria-label="${label}"><g transform="rotate(${ang} 28 28)"><path d="M32 22 L56 10 V46 L32 34Z" fill="${C.o}" opacity=".85" stroke="${C.n}" stroke-width="2"/></g><circle cx="28" cy="28" r="9" fill="${C.t}" ${SW}/></svg>`;
+  }
+  if (kind === 'waves') {
+    const m = String(code).match(/^(\d+)([ot])$/) || [0, 1, 't'];
+    const n = Number(m[1]); const col = m[2] === 'o' ? C.o : C.t;
+    const label = n + ' ' + (m[2] === 'o' ? 'оранжевых' : 'бирюзовых') + ' волн';
+    let p = '';
+    for (let i = 0; i < n; i++) p += `<path d="M6 ${10 + i * 12} q8 -8 16 0 q8 8 16 0 q8 -8 16 0" fill="none" stroke="${col}" stroke-width="5" stroke-linecap="round"/>`;
+    return `<svg viewBox="0 0 60 ${Math.max(24, n * 12 + 8)}" role="img" aria-label="${label}">${p}</svg>`;
+  }
+  return `<span>${esc(code)}</span>`;
+}
+function parsePattern(s) { const m = String(s || '').match(/^(\w+):\s*(.*)$/); return m ? { kind: m[1], seq: m[2].trim().split(/\s+/) } : null; }
+
+/* ================= Рендер оболочки ================= */
+const app = $('#app');
+function ribbons() {
+  const r = $('#ribbons'); let html = '';
+  if (DEMO) html += `<div class="demo-ribbon">ДЕМО-ВЕРСИЯ: результаты хранятся только в этом браузере, не в Google Таблице</div>`;
+  else if (!GAS && !API_OK) html += `<div class="demo-ribbon">Сайт ещё не подключён к Google Таблице (адрес сервера не указан)</div>`;
+  if (!S.online) html += `<div class="net-ribbon">Нет связи с сервером. Пройденные задания сохранятся на телефоне и отправятся позже.</div>`;
+  const pend = S.active ? outbox.pendingFor(S.active.pid).length : 0;
+  if (pend) html += `<div class="net-ribbon">Ожидают отправки: ${pend} <button class="btn small sec" data-act="flush" style="margin-left:8px">Отправить</button></div>`;
+  r.innerHTML = html;
+  $('#btnProgress').hidden = !S.me;
+  $('#btnSwitch').hidden = !S.active;
+  $('#btnMotion').textContent = 'Меньше движения: ' + (S.rm ? 'вкл' : 'выкл');
+  document.body.classList.toggle('rm', !!S.rm);
+  if (S.event) { $('#evTitle').textContent = S.event.title || '12 огней маяка'; document.title = S.event.title || document.title; }
+}
+
+function show(html) { app.innerHTML = html; window.scrollTo(0, 0); ribbons(); }
+function msg(el, kind, text) { if (!el) return; el.innerHTML = text ? `<div class="msg ${kind}" role="status">${esc(text)}</div>` : ''; }
+
+function go(route, push) {
+  S.route = route;
+  if (!GAS && !DEMO && push !== false) {
+    const url = route.name === 'game' ? '?g=' + encodeURIComponent(route.slug) : location.pathname;
+    try { history.pushState({ r: route }, '', url); } catch (e) { }
+  }
+  if (DEMO && push !== false) { try { history.replaceState(null, '', route.name === 'game' ? '#g=' + route.slug : '#'); } catch (e) { } }
+  render();
+}
+window.addEventListener('popstate', () => { S.route = parseRoute(); render(); });
+window.addEventListener('hashchange', () => { if (!DEMO) return; const r = parseRoute(); if (r.name !== S.route.name || r.slug !== S.route.slug) { S.route = r; render(); } });
+
+function parseRoute() {
+  let slug = '';
+  try { slug = new URLSearchParams(location.search).get('g') || ''; } catch (e) { }
+  if (!slug && location.hash.startsWith('#g=')) slug = decodeURIComponent(location.hash.slice(3));
+  return slug ? { name: 'game', slug: slug.trim().toLowerCase() } : { name: 'home' };
+}
+
+/* ================= Экраны ================= */
+async function render() {
+  const r = S.route;
+  if (r.name === 'progress') return renderProgress();
+  if (r.name === 'restore') return renderRestore();
+  if (r.name === 'register') return renderRegister();
+  if (r.name === 'game') return openGame(r.slug);
+  return renderHome();
+}
+
+function statusLine() {
+  const ev = S.event; if (!ev) return '';
+  if (ev.status === 'before') return `<div class="msg warn">Квест начнётся ${esc(ev.startText)} (МСК). Огоньки уже можно искать, а задания откроются в день старта.</div>`;
+  if (ev.status === 'after') return `<div class="msg info">Квест завершён ${esc(ev.endText)} (МСК). Спасибо, что играли! Свой прогресс можно посмотреть в «Моём прогрессе».</div>`;
+  return '';
+}
+
+function renderHome() {
+  const me = S.me;
+  const lit = S.games.filter(g => g.done).length;
+  const lights = S.games.map(g => `<div class="light ${g.done ? 'done' : g.found ? 'found' : ''}" title="Огонёк ${g.n}">${g.n}</div>`).join('');
+  const cards = S.games.map(g => {
+    const cls = g.done ? 'done' : g.found ? 'found' : 'locked';
+    const pts = g.kind === 'points' ? (g.found ? `${g.best || 0} из ${g.max} баллов` : `до ${g.max} баллов`) : 'отметка об участии';
+    const status = g.done ? 'Пройдено ✓' : g.found ? 'Найдено — можно играть' : 'Ещё не найдено';
+    const body = `<div class="num">${g.n}</div><div><div class="t">${esc(g.title)}</div><div class="s">${esc(status)} · ${esc(g.minutes)} мин · ${pts}</div>${!g.found && g.placeHint ? `<div class="s">Намёк: ${esc(g.placeHint)}</div>` : ''}${!g.active ? '<div class="s">Сейчас закрыто организатором</div>' : ''}</div>`;
+    return g.found && g.slug ? `<button class="gcard ${cls}" data-slug="${esc(g.slug)}">${body}</button>` : `<div class="gcard ${cls}">${body}</div>`;
+  }).join('');
+  show(`
+    ${statusLine()}
+    <section class="card navy">
+      <h1>${me ? 'Привет, ' + esc(me.first) + '!' : 'Найдите 12 огней'}</h1>
+      <p>По офису спрятаны 12 QR-кодов. Каждый открывает короткое задание на 1–3 минуты. Проходите в любом порядке и когда удобно.</p>
+      ${me ? `<p class="chips"><span class="chip orange">Зажжено огней: ${lit} из 12</span><span class="chip teal">Баллы: ${me.total} из ${me.max}</span><span class="chip">Найдено QR: ${me.found}</span></p>` : '<p>Отсканируйте любой QR-код камерой телефона — и начнём.</p>'}
+    </section>
+    <div class="lights" aria-label="Огни маяка">${lights}</div>
+    ${!me ? `<div class="card"><p>Уже играли на другом телефоне?</p><button class="btn sec wide" data-go="restore">Ввести личный код</button></div>` : ''}
+    <h2 style="margin-top:18px">Все огни</h2>
+    <div class="list">${cards}</div>
+    ${rulesHtml(true)}`);
+}
+
+function rulesHtml(collapsed) {
+  const body = `
+    <ul>
+      <li>Задания 1–10 дают до 10 баллов, задания 11–12 — отметку об участии. Максимум — 100 баллов.</li>
+      <li>Скорость не важна, таймеров нет. Ошибки баллы не отнимают.</li>
+      <li>Подсказки уменьшают баллы — насколько, написано прямо на кнопке.</li>
+      <li>Каждый вопрос засчитывается один раз — при первом решении. Открытая подсказка запоминается на сервере. Повтор задания может добавить баллы только за пропущенное, иначе он — для удовольствия.</li>
+      <li>Награды: «Главный смотритель» — больше всего баллов; «Все 12 огней» — пройдены все задания; «Попутный ветер» — случайный приз среди тех, кто прошёл 5 и больше заданий. Розыгрыш проводит организатор.</li>
+      <li>Общего рейтинга нет: каждый видит только свой прогресс. Результаты видит только организатор, после квеста данные удаляются.</li>
+      <li>Ссылку на задание можно переслать, но интереснее найти QR самому 🙂</li>
+    </ul>`;
+  return collapsed ? `<details class="card"><summary><b>Правила и баллы</b></summary>${body}</details>` : `<div class="card"><h2>Правила и баллы</h2>${body}</div>`;
+}
+
+function renderRegister(pendingGame) {
+  const ev = S.event || {};
+  const g = pendingGame || S.pendingGame;
+  show(`
+    ${statusLine()}
+    <section class="card">
+      ${g ? `<p class="caps" style="color:var(--orange)">Вы нашли огонёк №${g.n}!</p><h2>${esc(g.title)}</h2>` : '<h2>Добро пожаловать на борт!</h2>'}
+      <p>Это добровольная игра для сотрудников. Мы спрашиваем имя, чтобы в конце вручить призы. Результаты видит только организатор, а после квеста данные удаляются.</p>
+      <form id="regForm" novalidate>
+        <div class="field"><label for="f1">Имя</label><input id="f1" name="first" autocomplete="given-name" maxlength="40" required></div>
+        <div class="field"><label for="f2">Фамилия</label><input id="f2" name="last" autocomplete="family-name" maxlength="40" required></div>
+        ${ev.askDept !== false ? `<div class="field"><label for="f3">Подразделение <span class="muted">(необязательно)</span></label><input id="f3" name="dept" maxlength="60"></div>` : ''}
+        ${ev.eventCodeRequired ? `<div class="field"><label for="f4">Код мероприятия</label><input id="f4" name="code" maxlength="40" autocomplete="off"><div class="hint">Он есть в письме-приглашении.</div></div>` : ''}
+        <div id="regMsg"></div>
+        <button class="btn wide" type="submit">Поднять паруса</button>
+      </form>
+      <p class="muted" style="margin-top:12px">Телефон, почта и другие данные не нужны.</p>
+      <button class="btn ghost" data-go="restore">Я уже играл(а) на другом телефоне</button>
+    </section>`);
+  const f = $('#regForm');
+  f.addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = f.querySelector('button[type=submit]');
+    const data = Object.fromEntries(new FormData(f).entries());
+    if (!data.first.trim() || !data.last.trim()) return msg($('#regMsg'), 'bad', 'Укажите имя и фамилию.');
+    btn.disabled = true; msg($('#regMsg'), 'info', 'Записываем…');
+    const reqId = store.get('regReq', null) || uid(); store.set('regReq', reqId);
+    try {
+      const res = await call({ action: 'register', first: data.first, last: data.last, dept: data.dept || '', eventCode: data.code || '', deviceId: S.deviceId, reqId });
+      if (!res.ok) { btn.disabled = false; return msg($('#regMsg'), 'bad', res.message || 'Не получилось зарегистрироваться.'); }
+      store.del('regReq');
+      applyLogin(res);
+      showCode(true);
+    } catch (err) { btn.disabled = false; msg($('#regMsg'), 'bad', err.config ? err.message : 'Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.'); }
+  });
+}
+
+function applyLogin(res) {
+  S.active = { pid: res.me.id, token: res.token, name: res.me.name };
+  store.set('active', S.active);
+  S.me = res.me; if (res.games) S.games = res.games; if (res.event) S.event = res.event;
+  ribbons();
+}
+
+function showCode(afterRegister) {
+  const g = S.pendingGame;
+  show(`<section class="card">
+    <h2>${afterRegister ? 'Вы на борту!' : 'С возвращением!'}</h2>
+    <p>Ваш личный код:</p>
+    <div class="codebox">${esc(S.me.code)}</div>
+    <p>Запишите или сфотографируйте его. С ним можно продолжить на другом телефоне. По имени ваши результаты никто не откроет — но и код никому не показывайте.</p>
+    <button class="btn wide" id="goOn">${g ? 'К заданию «' + esc(g.title) + '»' : 'Ко всем огням'}</button>
+  </section>`);
+  $('#goOn').onclick = () => { if (g) { S.pendingGame = null; go({ name: 'game', slug: g.slug }, false); } else go({ name: 'home' }); };
+}
+
+function renderRestore() {
+  show(`<section class="card">
+    <h2>Продолжить с личным кодом</h2>
+    <p>Код выдаётся при первой регистрации и виден в «Моём прогрессе» на том телефоне.</p>
+    <form id="rf" novalidate>
+      <div class="field"><label for="rc">Личный код</label><input id="rc" placeholder="Например, ЧАЙКА-4827" autocomplete="off" autocapitalize="characters" maxlength="20"></div>
+      <div id="rMsg"></div>
+      <button class="btn wide" type="submit">Продолжить</button>
+    </form>
+    <p class="muted" style="margin-top:10px">Потеряли код? ${esc((S.event && S.event.contact) || 'Организатор')} подскажет его.</p>
+    <button class="btn ghost" data-go="register">Я здесь впервые</button>
+  </section>`);
+  $('#rf').addEventListener('submit', async e => {
+    e.preventDefault();
+    const code = $('#rc').value;
+    msg($('#rMsg'), 'info', 'Проверяем…');
+    try {
+      const res = await call({ action: 'restore', code, deviceId: S.deviceId }, { tries: 1 });
+      if (!res.ok) return msg($('#rMsg'), 'bad', res.message);
+      applyLogin(res);
+      showCode(false);
+    } catch (err) { msg($('#rMsg'), 'bad', 'Нет связи с сервером. Попробуйте ещё раз.'); }
+  });
+}
+
+function renderProgress() {
+  const me = S.me;
+  if (!me) return go({ name: 'register' }, false);
+  const rows = S.games.map(g => `<tr><td>${g.n}. ${esc(g.title)}</td><td>${g.done ? '✓' : g.found ? 'найдено' : '—'}</td><td>${g.kind === 'points' ? (g.found ? (g.best || 0) + '/' + g.max : '') : (g.done ? 'участие' : '')}</td></tr>`).join('');
+  const pend = outbox.pendingFor(me.id).length;
+  show(`<section class="card">
+    <h2>Мой прогресс</h2>
+    <p><b>${esc(me.name)}</b>${me.dept ? ' · ' + esc(me.dept) : ''}</p>
+    <p class="chips"><span class="chip orange">Баллы: ${me.total} из ${me.max}</span><span class="chip teal">Завершено: ${me.done} из 12</span><span class="chip">Найдено QR: ${me.found}</span></p>
+    ${pend ? `<div class="msg warn">Ещё не отправлено на сервер: ${pend}. Отправим, как только появится связь.</div>` : ''}
+    <table class="pts"><thead><tr><th>Задание</th><th>Статус</th><th>Баллы</th></tr></thead><tbody>${rows}</tbody></table>
+    <p>Ваш личный код — для продолжения на другом телефоне:</p>
+    <div class="codebox">${esc(me.code || '')}</div>
+    <div class="row"><button class="btn sec" data-act="refresh">Обновить</button><button class="btn sec" data-act="switch">Это не я / сменить участника</button></div>
+  </section>`);
+}
+
+/* ================= Задание: загрузка и общий каркас ================= */
+async function openGame(slug) {
+  show(`<div class="card"><p>Открываем огонёк…</p></div>`);
+  let res;
+  const cacheKey = pkey('g.' + slug);
+  try {
+    res = await call({ action: 'open', slug, token: S.active && S.active.token });
+  } catch (e) {
+    const cached = store.get(cacheKey, null);
+    if (cached) { res = Object.assign({}, cached, { offline: true }); }
+    else return show(`<div class="card"><h2>Нет связи</h2><p>${e.config ? esc(e.message) : 'Не получилось загрузить задание. Проверьте интернет и обновите страницу.'}</p><button class="btn" onclick="location.reload()">Обновить</button></div>`);
+  }
+  if (!res.ok) {
+    if (res.error === 'bad_token') { logout(); return openGame(slug); }
+    return show(`<div class="card"><h2>Огонёк не найден</h2><p>${esc(res.message)}</p><button class="btn" data-go="home">Все огни</button></div>`);
+  }
+  if (res.event) S.event = res.event;
+  if (!S.active || !res.state) { S.pendingGame = res.game; return renderRegister(res.game); }
+  if (res.me) S.me = res.me;
+  if (!res.offline) store.set(cacheKey, { ok: true, game: res.game, state: res.state, event: res.event });
+  const lg = S.games.find(x => x.n === res.game.n);
+  if (lg) { lg.found = true; lg.slug = res.game.slug; }
+  S.game = res.game; S.gstate = res.state; S.result = null;
+  renderGame();
+}
+
+function playKey() { return pkey('play.' + S.game.n); }
+function getPlay() {
+  let p = store.get(playKey(), null);
+  if (!p || p.ver !== S.game.version) { p = { attemptId: 'a' + uid().slice(0, 24), ver: S.game.version, local: {}, skipped: [] }; store.set(playKey(), p); }
+  return p;
+}
+function savePlay(p) { store.set(playKey(), p); }
+function newAttempt() { store.del(playKey()); S.result = null; renderGame(); }
+
+function renderGame() {
+  const g = S.game, st = S.gstate;
+  const ev = S.event || {};
+  const closed = ev.status !== 'open' && !(ev.status === 'after' && false);
+  const pts = g.kind === 'points' ? `до ${g.max} баллов` : 'отметка об участии';
+  const done = st && st.done;
+  show(`${statusLine()}
+    <section class="card">
+      <p class="caps" style="color:var(--orange);margin:0">Огонёк №${g.n}</p>
+      <h1>${esc(g.title)}</h1>
+      <div class="chips"><span class="chip">⏱ ${esc(g.minutes)} мин</span><span class="chip orange">${pts}</span>${done ? `<span class="chip teal">Уже пройдено · лучший результат ${g.kind === 'points' ? st.best + '/' + g.max : '✓'}</span>` : ''}</div>
+      <p>${esc(g.intro)}</p>
+      <p class="muted">${esc(g.how)}</p>
+      ${!g.active ? '<div class="msg warn">Это задание сейчас закрыто организатором.</div>' : g.blocked ? '<div class="msg warn">Задание обновляется. Загляните чуть позже.</div>' : ''}
+    </section>
+    <section id="stage"></section>
+    <div id="gameMsg"></div>`);
+  if (!g.active || g.blocked) return;
+  if (closed) { $('#stage').innerHTML = `<div class="card"><p>${ev.status === 'before' ? 'Задание откроется в день старта.' : 'Квест завершён — задания больше не принимают ответы.'}</p></div>`; return; }
+  const engine = ENGINES[g.type];
+  if (!engine) { $('#stage').innerHTML = '<div class="card">Неизвестный тип задания.</div>'; return; }
+  engine($('#stage'), g, st, getPlay());
+}
+
+/* Завершение попытки: отправка с подтверждением сервера */
+async function finishAttempt(payload, localSummary) {
+  const g = S.game; const play = getPlay();
+  const req = { action: 'finish', token: S.active.token, game: g.n, attemptId: play.attemptId, payload };
+  S.result = { attemptId: play.attemptId, save: 'saving', local: localSummary || '', server: null, game: g };
+  store.del(playKey());
+  renderResult();
+  try {
+    const res = await call(req);
+    if (res.ok) { S.result.save = 'saved'; S.result.server = res; S.me = res.me; S.gstate = res.state; updateListFromState(res); }
+    else if (RETRIABLE.includes(res.error)) { outbox.add({ id: play.attemptId, pid: S.active.pid, req, created: Date.now() }); S.result.save = 'queued'; }
+    else { S.result.save = 'error'; S.result.server = res; }
+  } catch (e) {
+    outbox.add({ id: play.attemptId, pid: S.active.pid, req, created: Date.now() });
+    S.result.save = 'queued';
+  }
+  renderResult();
+}
+
+function updateListFromState(res) {
+  const lg = S.games.find(x => x.n === res.game);
+  if (lg) { lg.done = true; lg.found = true; lg.best = res.score; }
+}
+
+function renderResult() {
+  const r = S.result, g = r.game;
+  const sv = r.server && r.server.ok ? r.server : null;
+  const scoreLine = g.kind === 'points'
+    ? (sv ? `<div class="big">${sv.score}<span style="font-size:28px"> / ${g.max}</span></div><p>баллов за задание (в зачёт идёт лучший результат)</p>` : `<div class="big">…</div><p>баллы подтвердит сервер</p>`)
+    : `<div class="big">✓</div><p>отметка об участии</p>`;
+  $('#stage').innerHTML = `<section class="card result" id="resultCard">
+    <h2>${sv || r.save !== 'error' ? 'Огонёк зажжён!' : 'Не получилось сохранить'}</h2>
+    <p>${esc(g.success)}</p>
+    ${r.local ? `<p class="muted">Результат: ${esc(sv ? sv.result || r.local : r.local)}</p>` : ''}
+    ${scoreLine}
+    <div id="saveLine"></div>
+    <div class="row" style="margin-top:10px"><button class="btn sec" data-act="again">Сыграть ещё раз</button><button class="btn" data-go="home">Все огни</button></div>
+  </section>`;
+  renderResultSave();
+  $('#resultCard').scrollIntoView({ block: 'start' });
+}
+
+function renderResultSave() {
+  const el = $('#saveLine'); if (!el || !S.result) return;
+  const s = S.result.save;
+  const text = { saving: 'Сохраняем результат…', saved: 'Результат сохранён ✓', queued: 'Нет связи. Результат сохранён на телефоне и отправится автоматически.', error: (S.result.server && S.result.server.message) || 'Сервер не принял результат.' }[s];
+  el.innerHTML = `<div class="save ${s}" role="status"><span class="dot"></span><span>${esc(text)}</span></div>${s === 'queued' ? '<button class="btn small sec" data-act="flush">Отправить сейчас</button>' : ''}`;
+  if (s === 'saved' && S.result.server) {
+    const sv = S.result.server; const card = $('#resultCard');
+    const big = card && card.querySelector('.big');
+    if (big && S.result.game.kind === 'points') big.innerHTML = `${sv.score}<span style="font-size:28px"> / ${S.result.game.max}</span>`;
+  }
+}
+
+/* Ответ на вопрос (проверяет сервер) */
+async function sendAnswer(item, value, reqId) {
+  return call({ action: 'answer', token: S.active.token, game: S.game.n, item, value, reqId });
+}
+async function askHint(item, extra) {
+  return call(Object.assign({ action: 'hint', token: S.active.token, game: S.game.n, item }, extra || {}));
+}
+function netFail(el, e) { msg(el, 'bad', e && e.config ? e.message : 'Нет связи с сервером — ответ не отправлен. Попробуйте ещё раз.'); }
+function inlineConfirm(btn, text, onYes) {
+  const box = document.createElement('div'); box.className = 'confirm';
+  box.innerHTML = `<p style="margin:0 0 8px">${esc(text)}</p><div class="row"><button class="btn small" data-y>Да, открыть</button><button class="btn small sec" data-n>Отмена</button></div>`;
+  btn.replaceWith(box);
+  box.querySelector('[data-n]').onclick = () => box.replaceWith(btn);
+  box.querySelector('[data-y]').onclick = () => { box.replaceWith(btn); onYes(); };
+}
+
+/* ================= Механики ================= */
+const ENGINES = {};
+
+/* 1, 2: загадки и шифры */
+ENGINES.riddles = function (stage, g, st, play) {
+  const items = st.items;
+  function card(q, i) {
+    const it = items[q.id];
+    const solved = it.res === 'ok';
+    const skipped = !solved && play.skipped.includes(q.id);
+    const emoji = /\p{Extended_Pictographic}/u.test(q.text) && q.text.replace(/[\p{Extended_Pictographic}️⃣‍\s\d➕➡]/gu, '') === '';
+    const boxes = q.pattern ? `<div class="boxes" aria-label="Слов: ${q.pattern.split(/\s+/).length}, букв: ${esc(q.pattern)}">${q.pattern.split(/\s+/).map(n => `<span class="w">${'<i></i>'.repeat(Number(n) || 0)}</span>`).join('')}</div>` : '';
+    const hintBtn = q.hints > 0 && !it.h ? `<button class="btn small sec ${it.w >= 3 ? 'hl' : ''}" data-hint="${q.id}">Подсказка (−${q.points - (q.hintPoints[0] == null ? q.points - 1 : q.hintPoints[0])} балл)</button>` : '';
+    return `<div class="q ${solved ? 'solved' : ''} ${skipped ? 'skipped' : ''}" id="q-${q.id}">
+      <p class="muted" style="margin:0">Вопрос ${i + 1} из ${g.questions.length}${solved ? ` · ✓ +${it.pts}` : ''}</p>
+      ${emoji ? `<div class="emoji" aria-label="Шифр из смайликов">${esc(q.text)}</div>` : `<div class="qtext">${esc(q.text)}</div>`}
+      ${boxes}
+      ${it.hints.map(h => `<div class="hintbox">Подсказка: ${esc(h)}</div>`).join('')}
+      ${solved ? `<div class="msg ok">Верно${it.answer ? ': ' + esc(it.answer) : ''}!</div>` : skipped ? `<p class="muted">Пропущено — можно вернуться при повторе.</p><button class="btn small sec" data-unskip="${q.id}">Вернуться к вопросу</button>` : `
+        <form data-form="${q.id}" novalidate class="stack">
+          <div class="field" style="margin:0"><label class="sr" for="in-${q.id}">Ваш ответ</label><input id="in-${q.id}" maxlength="100" autocomplete="off" autocapitalize="none" placeholder="Ваш ответ"></div>
+          <div class="row"><button class="btn" type="submit">Проверить</button>${hintBtn}<button class="btn ghost" type="button" data-skip="${q.id}">Пропустить</button></div>
+          <div data-msg="${q.id}"></div>
+        </form>`}
+    </div>`;
+  }
+  function draw() {
+    stage.innerHTML = g.questions.map(card).join('') + `<div id="rdone"></div>`;
+    const allResolved = g.questions.every(q => items[q.id].res === 'ok' || play.skipped.includes(q.id));
+    if (allResolved) {
+      const solved = g.questions.filter(q => items[q.id].res === 'ok').length;
+      $('#rdone').innerHTML = `<button class="btn wide" id="rfin">Зажечь огонёк</button>`;
+      $('#rfin').onclick = () => finishAttempt({ skipped: play.skipped.slice() }, 'решено ' + solved + ' из ' + g.questions.length);
+    }
+    $$('form[data-form]', stage).forEach(f => f.addEventListener('submit', onSubmit));
+    $$('[data-hint]', stage).forEach(b => b.onclick = () => inlineConfirm(b, 'Подсказка уменьшит баллы за этот вопрос. Открыть?', () => onHint(b.dataset.hint)));
+    $$('[data-skip]', stage).forEach(b => b.onclick = () => { play.skipped.push(b.dataset.skip); savePlay(play); draw(); });
+    $$('[data-unskip]', stage).forEach(b => b.onclick = () => { play.skipped = play.skipped.filter(x => x !== b.dataset.unskip); savePlay(play); draw(); });
+  }
+  async function onSubmit(e) {
+    e.preventDefault();
+    const id = e.target.dataset.form; const inp = $('#in-' + id, stage); const m = $(`[data-msg="${id}"]`, stage);
+    const v = inp.value.trim(); if (!v) return msg(m, 'bad', 'Введите ответ.');
+    const btn = e.target.querySelector('button[type=submit]'); btn.disabled = true; msg(m, 'info', 'Проверяем…');
+    try {
+      const res = await sendAnswer(id, v, uid());
+      btn.disabled = false;
+      if (!res.ok) return msg(m, 'bad', res.message);
+      items[id] = res.item;
+      if (res.correct) { draw(); maybeAutoFinish(); }
+      else {
+        if (res.item.w >= 3) draw(); // подсветить кнопку подсказки
+        const m2 = $(`[data-msg="${id}"]`, stage), inp2 = $('#in-' + id, stage), q = $('#q-' + id, stage);
+        msg(m2, 'bad', 'Пока не то. Попробуйте ещё — попытки не ограничены.');
+        if (inp2) { inp2.value = v; inp2.select(); }
+        if (q) { q.classList.remove('shake'); void q.offsetWidth; q.classList.add('shake'); }
+      }
+    } catch (err) { btn.disabled = false; netFail(m, err); }
+  }
+  async function onHint(id) {
+    const m = $(`[data-msg="${id}"]`, stage);
+    try { const res = await askHint(id); if (!res.ok) return msg(m, 'bad', res.message); items[id] = res.item; draw(); }
+    catch (err) { netFail(m, err); }
+  }
+  function maybeAutoFinish() { /* итог подтверждаем кнопкой «Зажечь огонёк», чтобы участник видел последний ответ */ }
+  draw();
+};
+
+/* 10: финальная загадка с тремя подсказками */
+ENGINES.final = function (stage, g, st, play) {
+  const q = g.questions[0];
+  let it = st.items[q.id];
+  const grid = (g.data && g.data.grid) || { rows: [], cols: [] };
+  play.local.marks = play.local.marks || {};
+  const ladder = [q.points].concat(q.hintPoints);
+  function draw() {
+    const solved = it.res === 'ok', shown = it.res === 'shown';
+    const marks = play.local.marks;
+    stage.innerHTML = `<div class="q ${solved ? 'solved' : ''}">
+      <div class="qtext">${esc(q.text)}</div>
+      <table class="pts"><tr><th>Подсказок</th>${ladder.map((_, i) => `<th>${i}</th>`).join('')}</tr><tr><td>Баллы</td>${ladder.map((p, i) => `<td${i === (it.h || 0) && !solved && !shown ? ' style="font-weight:800;color:var(--orange)"' : ''}>${p}</td>`).join('')}</tr></table>
+      <p class="muted" style="margin:8px 0 0">Черновик (касание: ✗ → ✓ → пусто). На баллы не влияет.</p>
+      <div class="grid3"><b></b>${grid.cols.map(c => `<b>${esc(c)}</b>`).join('')}${grid.rows.map(r => `<b style="text-align:left">${esc(r)}</b>${grid.cols.map(c => { const k = r + '|' + c; return `<button data-mark="${esc(k)}" aria-label="${esc(r)} — ${esc(c)}">${marks[k] === 1 ? '✗' : marks[k] === 2 ? '✓' : ''}</button>`; }).join('')}`).join('')}</div>
+      ${it.hints.map((h, i) => `<div class="hintbox">Подсказка ${i + 1}: ${esc(h)}</div>`).join('')}
+      ${solved ? `<div class="msg ok">Верно: ${esc(it.answer || '')}! +${it.pts}</div>${it.explanation ? `<p class="muted">${esc(it.explanation)}</p>` : ''}<button class="btn wide" id="ffin">Зажечь огонёк</button>`
+        : shown ? `<div class="msg info">Ответ: ${esc(it.answer)}. ${esc(it.explanation || '')}</div><button class="btn wide" id="ffin">Зажечь огонёк</button>`
+        : `<form id="ff" novalidate class="stack"><div class="field" style="margin:0"><label for="fin">Ваш ответ</label><input id="fin" maxlength="100" autocomplete="off"></div>
+          <div class="row"><button class="btn" type="submit">Проверить</button>${(it.h || 0) < q.hints ? `<button class="btn small sec" type="button" id="fh">Подсказка ${(it.h || 0) + 1} (станет ${ladder[(it.h || 0) + 1]} б.)</button>` : `<button class="btn small sec" type="button" id="fs">Показать решение (0 баллов)</button>`}</div><div id="fm"></div></form>`}
+    </div>`;
+    $$('[data-mark]', stage).forEach(b => b.onclick = () => { const k = b.dataset.mark; marks[k] = ((marks[k] || 0) + 1) % 3; savePlay(play); b.textContent = marks[k] === 1 ? '✗' : marks[k] === 2 ? '✓' : ''; });
+    const fin = $('#ffin', stage); if (fin) fin.onclick = () => finishAttempt({}, solved ? 'решено, подсказок: ' + (it.h || 0) : 'решение показано');
+    const f = $('#ff', stage);
+    if (f) f.addEventListener('submit', async e => {
+      e.preventDefault(); const v = $('#fin').value.trim(); if (!v) return msg($('#fm'), 'bad', 'Введите ответ.');
+      msg($('#fm'), 'info', 'Проверяем…');
+      try { const res = await sendAnswer(q.id, v, uid()); if (!res.ok) return msg($('#fm'), 'bad', res.message); it = res.item; if (res.correct) draw(); else msg($('#fm'), 'bad', 'Смотритель заглянул в термос — нет, не то. Попробуйте ещё.'); }
+      catch (err) { netFail($('#fm'), err); }
+    });
+    const fh = $('#fh', stage); if (fh) fh.onclick = () => inlineConfirm(fh, `Подсказка ${(it.h || 0) + 1}: баллы за загадку станут ${ladder[(it.h || 0) + 1]}. Открыть?`, async () => {
+      try { const res = await askHint(q.id); if (!res.ok) return msg($('#fm'), 'bad', res.message); it = res.item; draw(); } catch (err) { netFail($('#fm'), err); }
+    });
+    const fs = $('#fs', stage); if (fs) fs.onclick = () => inlineConfirm(fs, 'Показать решение? Задание будет засчитано как пройденное, но без баллов.', async () => {
+      try { const res = await call({ action: 'reveal', token: S.active.token, game: g.n }); if (!res.ok) return msg($('#fm'), 'bad', res.message); it = Object.assign({}, it, { res: 'shown', answer: res.shown[0].answer, explanation: res.shown[0].explanation, pts: 0 }); draw(); } catch (err) { netFail($('#fm'), err); }
+    });
+  }
+  draw();
+};
+
+/* 3: память */
+ENGINES.memory = function (stage, g, st, play) {
+  const pairs = (g.data && g.data.pairs) || [];
+  const L = play.local;
+  if (!L.order) {
+    const deck = pairs.flatMap(p => [p.id, p.id]);
+    for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
+    L.order = deck; L.matched = []; L.open = []; L.moves = 0; savePlay(play);
+  }
+  const label = id => (pairs.find(p => p.id === id) || {}).label || id;
+  function draw() {
+    stage.innerHTML = `<div class="card"><p class="chips"><span class="chip">Ходов: ${L.moves}</span><span class="chip teal">Найдено пар: ${L.matched.length} из ${pairs.length}</span></p>
+      <div class="mem-grid">${L.order.map((id, i) => { const isOpen = L.open.includes(i) || L.matched.includes(id); return `<button class="mem ${L.matched.includes(id) ? 'done' : isOpen ? 'open' : ''}" data-i="${i}" aria-label="${isOpen ? label(id) : 'Закрытая карточка ' + (i + 1)}">${isOpen ? icon(id) + `<span class="lb">${esc(label(id))}</span>` : BACK}</button>`; }).join('')}</div></div>`;
+    $$('.mem', stage).forEach(b => b.onclick = () => flip(Number(b.dataset.i)));
+  }
+  function flip(i) {
+    const id = L.order[i];
+    if (L.matched.includes(id) || L.open.includes(i)) return;
+    if (L.open.length === 2) L.open = [];
+    L.open.push(i);
+    if (L.open.length === 2) {
+      L.moves++;
+      const [a, b] = L.open;
+      if (L.order[a] === L.order[b]) { L.matched.push(L.order[a]); L.open = []; }
+    }
+    savePlay(play); draw();
+    if (L.matched.length === pairs.length) setTimeout(() => finishAttempt({ pairs: pairs.length, moves: L.moves }, 'все пары за ' + L.moves + ' ходов'), 500);
+  }
+  draw();
+};
+
+/* 4: пазл 3×3, обмен касаниями или перетаскиванием */
+ENGINES.puzzle = function (stage, g, st, play) {
+  const n = (g.data && g.data.size) || 3; const N = n * n;
+  const L = play.local;
+  if (!L.order) {
+    let o;
+    do { o = Array.from({ length: N }, (_, i) => i); for (let i = N - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [o[i], o[j]] = [o[j], o[i]]; } } while (o.some((v, i) => v === i));
+    L.order = o; L.swaps = 0; savePlay(play);
+  }
+  let sel = null, showRef = false;
+  const W = 320 / n, H = 240 / n;
+  const sceneInner = bayScene('a').replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '');
+  const tileSvg = k => `<svg viewBox="${(k % n) * W} ${Math.floor(k / n) * H} ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${sceneInner}</svg>`;
+  function draw() {
+    const right = L.order.filter((v, i) => v === i).length;
+    stage.innerHTML = `<div class="card"><p class="chips"><span class="chip">Обменов: ${L.swaps}</span><span class="chip teal">На месте: ${right} из ${N}</span></p>
+      ${showRef ? `<div class="scene-box">${bayScene('a')}</div>` : `<div class="puz" id="puz">${L.order.map((k, i) => `<button class="tile ${sel === i ? 'sel' : ''}" data-i="${i}" aria-label="Кусочек ${i + 1}${sel === i ? ', выбран' : ''}">${tileSvg(k)}</button>`).join('')}</div>`}
+      <div class="row" style="margin-top:10px"><button class="btn sec small" id="ref">${showRef ? 'Вернуться к пазлу' : 'Посмотреть образец'}</button></div></div>`;
+    $('#ref', stage).onclick = () => { showRef = !showRef; draw(); };
+    if (showRef) return;
+    $$('.tile', stage).forEach(b => {
+      b.onclick = () => tap(Number(b.dataset.i));
+      b.addEventListener('pointerdown', e => { dragFrom = Number(b.dataset.i); dragMoved = false; startX = e.clientX; startY = e.clientY; });
+    });
+  }
+  let dragFrom = null, dragMoved = false, startX = 0, startY = 0;
+  stage.addEventListener('pointermove', e => { if (dragFrom != null && Math.hypot(e.clientX - startX, e.clientY - startY) > 12) dragMoved = true; });
+  stage.addEventListener('pointerup', e => {
+    if (dragFrom == null) return;
+    const from = dragFrom; dragFrom = null;
+    if (!dragMoved) return; // это было касание — обработает click
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    const t = el && el.closest('.tile');
+    if (t) { const to = Number(t.dataset.i); if (to !== from) { swap(from, to); suppressClick = true; setTimeout(() => suppressClick = false, 50); } }
+  });
+  let suppressClick = false;
+  function tap(i) {
+    if (suppressClick) return;
+    if (sel == null) { sel = i; draw(); return; }
+    if (sel === i) { sel = null; draw(); return; }
+    swap(sel, i);
+  }
+  function swap(a, b) {
+    [L.order[a], L.order[b]] = [L.order[b], L.order[a]]; L.swaps++; sel = null; savePlay(play); draw();
+    if (L.order.every((v, i) => v === i)) setTimeout(() => finishAttempt({ order: L.order.slice(), swaps: L.swaps }, 'собрано за ' + L.swaps + ' обменов'), 400);
+  }
+  draw();
+};
+
+/* 5: найди отличия */
+ENGINES.diff = function (stage, g, st, play) {
+  const zones = (g.data && g.data.zones) || [];
+  const L = play.local;
+  L.found = L.found || []; // [{id,x,y}]
+  const items = st.items;
+  let zoom = false, hl = null, misses = [];
+  const isDone = id => L.found.some(f => f.id === id) || (items[id] && items[id].res === 'ok');
+  const isShown = id => items[id] && items[id].res === 'shown';
+  function overlay() {
+    let s = '';
+    zones.forEach(z => {
+      if (isDone(z.id)) s += `<circle cx="${z.x}" cy="${z.y}" r="${z.r}" fill="none" stroke="${C.o}" stroke-width="4"/>`;
+      else if (isShown(z.id)) s += `<circle cx="${z.x}" cy="${z.y}" r="${z.r}" fill="none" stroke="${C.n}" stroke-width="3" stroke-dasharray="6 5"/>`;
+    });
+    if (hl) s += `<rect x="${hl.x}" y="${hl.y}" width="160" height="120" fill="${C.o}" opacity=".18" stroke="${C.o}" stroke-width="3"/>`;
+    misses.forEach(m => { s += `<circle cx="${m.x}" cy="${m.y}" r="9" fill="none" stroke="#7D9297" stroke-width="2"/>`; });
+    return s;
+  }
+  const withOverlay = v => bayScene(v).replace('</svg>', `<g id="ov-${v}">${overlay()}</g></svg>`);
+  function draw() {
+    const cnt = zones.filter(z => isDone(z.id) || isShown(z.id)).length;
+    stage.innerHTML = `<div class="card">
+      <p class="chips"><span class="chip teal">Найдено: ${zones.filter(z => isDone(z.id)).length} из ${zones.length}</span><span class="chip">Подсказка: −1 балл за отличие</span></p>
+      <div class="zoomwrap ${zoom ? 'zoom' : ''}"><div class="scene-label">Было</div><div class="scene-box" data-v="a">${withOverlay('a')}</div><div class="scene-label">Стало — касайтесь отличий здесь</div><div class="scene-box" data-v="b">${withOverlay('b')}</div></div>
+      <div class="row" style="margin-top:10px"><button class="btn sec small" id="dz">${zoom ? 'Обычный размер' : 'Увеличить'}</button><button class="btn sec small" id="dh">Подсказка (−1 балл)</button><button class="btn ghost" id="dr">Показать оставшиеся</button></div>
+      <div id="dm"></div>
+      ${cnt === zones.length ? '<button class="btn wide" id="dfin" style="margin-top:10px">Зажечь огонёк</button>' : ''}
+    </div>`;
+    $$('.scene-box', stage).forEach(box => box.addEventListener('click', e => onTap(e, box)));
+    $('#dz', stage).onclick = () => { zoom = !zoom; draw(); };
+    $('#dh', stage).onclick = e => inlineConfirm(e.target, 'Подсказка подсветит четверть картинки с одним из отличий. За это отличие будет 1 балл вместо 2. Открыть?', onHint);
+    $('#dr', stage).onclick = e => inlineConfirm(e.target, 'Показать все оставшиеся отличия? За показанные баллов не будет.', onReveal);
+    const fin = $('#dfin', stage);
+    if (fin) fin.onclick = () => finishAttempt({ found: L.found }, 'найдено ' + zones.filter(z => isDone(z.id)).length + ' из ' + zones.length);
+  }
+  function onTap(e, box) {
+    const svg = box.querySelector('svg'); const r = svg.getBoundingClientRect();
+    const x = (e.clientX - r.left) * 320 / r.width, y = (e.clientY - r.top) * 240 / r.height;
+    const hit = zones.filter(z => !isDone(z.id) && !isShown(z.id) && Math.hypot(x - z.x, y - z.y) <= z.r + 6).sort((a, b) => Math.hypot(x - a.x, y - a.y) - Math.hypot(x - b.x, y - b.y))[0];
+    if (hit) { L.found.push({ id: hit.id, x: Math.round(x), y: Math.round(y) }); if (hl) hl = null; savePlay(play); misses = []; draw(); msg($('#dm'), 'ok', 'Есть! ' + (g.questions.find(q => q.id === hit.id) || {}).text); }
+    else { misses = [{ x, y }]; $$('[id^=ov-]', stage).forEach(o => o.innerHTML = overlay()); }
+  }
+  async function onHint() {
+    try {
+      const res = await askHint(null, { found: L.found.map(f => f.id) });
+      if (!res.ok) return msg($('#dm'), 'bad', res.message);
+      if (res.none) return msg($('#dm'), 'info', res.message);
+      items[res.itemId] = res.item;
+      const z = zones.find(x => x.id === res.itemId);
+      hl = { x: z.x < 160 ? 0 : 160, y: z.y < 120 ? 0 : 120 };
+      draw(); msg($('#dm'), 'info', 'Отличие где-то в подсвеченной четверти.');
+    } catch (err) { netFail($('#dm'), err); }
+  }
+  async function onReveal() {
+    try {
+      const res = await call({ action: 'reveal', token: S.active.token, game: g.n, found: L.found.map(f => f.id) });
+      if (!res.ok) return msg($('#dm'), 'bad', res.message);
+      res.shown.forEach(s => { items[s.id] = Object.assign({}, items[s.id], { res: 'shown', answer: s.answer }); });
+      savePlay(play); draw(); msg($('#dm'), 'info', 'Оставшиеся отличия обведены пунктиром.');
+    } catch (err) { netFail($('#dm'), err); }
+  }
+  draw();
+};
+
+/* 6, 7: выбор из вариантов («Лишний гость», «Продолжи узор») */
+ENGINES.choice = function (stage, g, st, play) {
+  const items = st.items;
+  const L = play.local;
+  if (L.idx == null) { L.idx = 0; L.answered = {}; savePlay(play); }
+  if (!L.shuffle) { L.shuffle = {}; g.questions.forEach(q => { const o = q.options.slice(); for (let i = o.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [o[i], o[j]] = [o[j], o[i]]; } L.shuffle[q.id] = o; }); savePlay(play); }
+  function optView(q, code) { const p = parsePattern(q.pattern); return p ? patternPiece(p.kind, code) : `<span>${esc(code)}</span>`; }
+  function draw() {
+    const q = g.questions[L.idx];
+    const a = L.answered[q.id]; // ответ в этой попытке
+    const it = items[q.id];
+    const p = parsePattern(q.pattern);
+    const prior = it.res && !a ? `<div class="msg info">${it.res === 'ok' ? 'Этот вопрос уже засчитан ✓' : 'Этот вопрос уже оценён.'} Сейчас — для удовольствия.</div>` : '';
+    stage.innerHTML = `<div class="card">
+      <div class="progress-dots">${g.questions.map((x, i) => `<i class="${i === L.idx ? 'cur' : (L.answered[x.id] || items[x.id].res) ? 'on' : ''}"></i>`).join('')}</div>
+      <p class="muted" style="text-align:center;margin:0">${esc(q.text)} · ${L.idx + 1} из ${g.questions.length}</p>
+      ${p ? `<div class="seq">${p.seq.map(c => patternPiece(p.kind, c)).join('')}<span class="qm" aria-label="что дальше?">?</span></div>` : ''}
+      ${prior}
+      <div class="opts">${L.shuffle[q.id].map(o => { let cls = ''; if (a) { if (o === a.right) cls = 'right'; else if (o === a.value) cls = 'wrong'; } return `<button class="opt ${cls}" data-o="${esc(o)}" ${a ? 'disabled' : ''}>${optView(q, o)}</button>`; }).join('')}</div>
+      <div id="cm">${a ? `<div class="msg ${a.correct ? 'ok' : 'bad'}">${a.correct ? 'Верно!' : 'Не совсем.'}${a.practice ? '' : a.correct ? ' +' + a.pts + ' б.' : ''}</div>${a.explanation ? `<p>${esc(a.explanation)}</p>` : ''}` : ''}</div>
+      ${a ? (L.idx < g.questions.length - 1 ? `<button class="btn wide" id="cnext">Дальше</button>` : `<button class="btn wide" id="cfin">Зажечь огонёк</button>`) : ''}
+    </div>`;
+    $$('.opt', stage).forEach(b => b.onclick = () => choose(q, b.dataset.o));
+    const nx = $('#cnext', stage); if (nx) nx.onclick = () => { L.idx++; savePlay(play); draw(); };
+    const fn = $('#cfin', stage); if (fn) fn.onclick = () => { const right = g.questions.filter(x => items[x.id].res === 'ok').length; finishAttempt({}, 'с первого раза верно: ' + right + ' из ' + g.questions.length); };
+  }
+  async function choose(q, value) {
+    $$('.opt', stage).forEach(b => b.disabled = true);
+    msg($('#cm'), 'info', 'Проверяем…');
+    try {
+      const res = await sendAnswer(q.id, value, uid());
+      if (!res.ok) { $$('.opt', stage).forEach(b => b.disabled = false); return msg($('#cm'), 'bad', res.message); }
+      items[q.id] = res.item;
+      L.answered[q.id] = { value, correct: res.correct, right: res.right, explanation: res.explanation, practice: res.practice, pts: res.item.pts };
+      savePlay(play); draw();
+    } catch (err) { $$('.opt', stage).forEach(b => b.disabled = false); netFail($('#cm'), err); }
+  }
+  draw();
+};
+
+/* 8: филворд — касание первой и последней буквы или проведение пальцем */
+ENGINES.words = function (stage, g, st, play) {
+  const grid = (g.data && g.data.grid) || [];
+  const R = grid.length, Cn = R ? Array.from(grid[0]).length : 0;
+  const cells = grid.map(r => Array.from(r));
+  const items = st.items;
+  const L = play.local; L.found = L.found || []; // [{id,r1,c1,r2,c2}]
+  let start = null, dragEnd = null, dragging = false;
+  const wordOf = q => q.text;
+  const isFound = id => L.found.some(f => f.id === id) || (items[id] && items[id].res === 'ok');
+  function pathCells(a, b) {
+    if (!a || !b) return [];
+    if (a.r === b.r && b.c >= a.c) return Array.from({ length: b.c - a.c + 1 }, (_, i) => [a.r, a.c + i]);
+    if (a.c === b.c && b.r >= a.r) return Array.from({ length: b.r - a.r + 1 }, (_, i) => [a.r + i, a.c]);
+    return [];
+  }
+  function locate(word) {
+    for (let r = 0; r < R; r++) for (let c = 0; c < Cn; c++) {
+      if (cells[r].slice(c, c + word.length).join('') === word) return { r1: r, c1: c, r2: r, c2: c + word.length - 1 };
+      let v = ''; for (let i = 0; i < word.length && r + i < R; i++) v += cells[r + i][c];
+      if (v === word) return { r1: r, c1: c, r2: r + word.length - 1, c2: c };
+    }
+    return null;
+  }
+  function foundCells() {
+    const set = new Set();
+    g.questions.forEach(q => { if (!isFound(q.id)) return; const f = L.found.find(x => x.id === q.id) || locate(wordOf(q)); if (f) pathCells({ r: f.r1, c: f.c1 }, { r: f.r2, c: f.c2 }).forEach(([r, c]) => set.add(r + ',' + c)); });
+    return set;
+  }
+  function hintedCells() { const s = new Set(); g.questions.forEach(q => { if (items[q.id] && items[q.id].h && !isFound(q.id)) { const p = locate(wordOf(q)); if (p) s.add(p.r1 + ',' + p.c1); } }); return s; }
+  function draw() {
+    const fc = foundCells(), hc = hintedCells();
+    const pc = new Set(pathCells(start, dragEnd).map(x => x.join(',')));
+    const all = g.questions.every(q => isFound(q.id));
+    stage.innerHTML = `<div class="card">
+      <div class="wgrid" id="wg">${cells.map((row, r) => row.map((ch, c) => { const k = r + ',' + c; return `<button class="cell ${fc.has(k) ? 'found' : ''} ${start && start.r === r && start.c === c ? 'sel' : ''} ${pc.has(k) ? 'path' : ''} ${hc.has(k) ? 'hinted' : ''}" data-r="${r}" data-c="${c}" aria-label="${ch}, строка ${r + 1}, столбец ${c + 1}">${ch}</button>`; }).join('')).join('')}</div>
+      <div class="words">${g.questions.map(q => `<span class="word ${isFound(q.id) ? 'found' : ''}">${esc(q.text)}${!isFound(q.id) && !(items[q.id] && items[q.id].h) ? ` <button class="btn ghost small" style="min-height:32px;padding:0 4px" data-wh="${q.id}" aria-label="Подсказка к слову ${esc(q.text)}">подсказка −1</button>` : ''}</span>`).join('')}</div>
+      <div id="wm"></div>
+      ${all ? '<button class="btn wide" id="wfin">Зажечь огонёк</button>' : '<button class="btn sec wide" id="wstop">Завершить с найденными</button>'}
+    </div>`;
+    const wg = $('#wg', stage);
+    wg.addEventListener('pointerdown', e => { const t = e.target.closest('.cell'); if (!t) return; e.preventDefault(); dragging = true; const p = { r: +t.dataset.r, c: +t.dataset.c }; if (start && !(start.r === p.r && start.c === p.c)) { dragging = false; complete(start, p); return; } start = p; dragEnd = p; draw(); });
+    wg.addEventListener('pointermove', e => { if (!dragging) return; const el = document.elementFromPoint(e.clientX, e.clientY); const t = el && el.closest && el.closest('.cell'); if (!t) return; const p = { r: +t.dataset.r, c: +t.dataset.c }; if (!dragEnd || p.r !== dragEnd.r || p.c !== dragEnd.c) { dragEnd = p; $$('.cell', wg).forEach(b => b.classList.toggle('path', pathCells(start, dragEnd).some(([r, c]) => r === +b.dataset.r && c === +b.dataset.c))); } });
+    wg.addEventListener('pointerup', () => { if (!dragging) return; dragging = false; if (dragEnd && start && !(dragEnd.r === start.r && dragEnd.c === start.c)) complete(start, dragEnd); });
+    $$('[data-wh]', stage).forEach(b => b.onclick = () => inlineConfirm(b, 'Подсветить первую букву слова? За него будет 1 балл вместо 2.', () => hint(b.dataset.wh)));
+    const fin = $('#wfin', stage); if (fin) fin.onclick = () => finishAttempt({ found: L.found }, 'найдено слов: ' + g.questions.filter(q => isFound(q.id)).length + ' из ' + g.questions.length);
+    const stop = $('#wstop', stage); if (stop) stop.onclick = () => inlineConfirm(stop, 'Завершить сейчас? Ненайденные слова можно будет добрать при повторе.', () => finishAttempt({ found: L.found, stop: true }, 'найдено слов: ' + g.questions.filter(q => isFound(q.id)).length + ' из ' + g.questions.length));
+  }
+  function complete(a, b) {
+    let p = pathCells(a, b);
+    if (!p.length) { const rev = pathCells(b, a); if (rev.length) { p = rev; [a, b] = [b, a]; } }
+    const text = p.map(([r, c]) => cells[r][c]).join('');
+    const q = g.questions.find(x => x.text === text && !isFound(x.id));
+    start = null; dragEnd = null;
+    if (q && p.length) { L.found.push({ id: q.id, r1: a.r, c1: a.c, r2: b.r, c2: b.c }); savePlay(play); draw(); msg($('#wm'), 'ok', 'Найдено слово ' + q.text + '!'); }
+    else { draw(); msg($('#wm'), 'bad', p.length ? 'Такого слова в списке нет. Попробуйте ещё.' : 'Слова читаются только слева направо или сверху вниз.'); }
+  }
+  async function hint(id) {
+    try { const res = await askHint(id); if (!res.ok) return msg($('#wm'), 'bad', res.message); items[id] = res.item; draw(); msg($('#wm'), 'info', 'Первая буква подсвечена оранжевой рамкой.'); }
+    catch (err) { netFail($('#wm'), err); }
+  }
+  draw();
+};
+
+/* 9: лабиринт */
+ENGINES.maze = function (stage, g, st, play) {
+  const d = g.data; const rows = d.rows; const H = rows.length, W = rows[0].length;
+  const L = play.local;
+  if (!L.pos) { L.pos = d.start.slice(); L.moves = ''; L.trail = [d.start.slice()]; savePlay(play); }
+  const CS = 40, PAD = 4;
+  const MOV = { U: [1, -1, 0, '↑'], R: [2, 0, 1, '→'], D: [4, 1, 0, '↓'], L: [8, 0, -1, '←'] };
+  function svg() {
+    let s = `<svg viewBox="0 0 ${W * CS + PAD * 2} ${H * CS + PAD * 2}" aria-label="Карта лабиринта: кораблик в клетке ${L.pos[0] + 1}-${L.pos[1] + 1}, маяк в правом верхнем углу">`;
+    s += `<rect width="100%" height="100%" fill="#D5EAF0"/>`;
+    const tr = L.trail.map(([y, x]) => `${PAD + x * CS + CS / 2},${PAD + y * CS + CS / 2}`).join(' ');
+    s += `<polyline points="${tr}" fill="none" stroke="${C.o}" stroke-width="3" stroke-dasharray="2 7" stroke-linecap="round"/>`;
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const v = parseInt(rows[y][x], 16), X = PAD + x * CS, Y = PAD + y * CS;
+      const line = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${C.n}" stroke-width="5" stroke-linecap="round"/>`;
+      if (!(v & 1)) s += line(X, Y, X + CS, Y);
+      if (!(v & 8)) s += line(X, Y, X, Y + CS);
+      if (y === H - 1 && !(v & 4)) s += line(X, Y + CS, X + CS, Y + CS);
+      if (x === W - 1 && !(v & 2)) s += line(X + CS, Y, X + CS, Y + CS);
+    }
+    const fx = PAD + d.finish[1] * CS, fy = PAD + d.finish[0] * CS;
+    s += `<g transform="translate(${fx + 4} ${fy + 2}) scale(.5)">${ICONS.mayak}</g>`;
+    const bx = PAD + L.pos[1] * CS, by = PAD + L.pos[0] * CS;
+    s += `<g id="boat" transform="translate(${bx + 4} ${by + 4}) scale(.5)">${ICONS.boat}</g>`;
+    return s + '</svg>';
+  }
+  function draw() {
+    stage.innerHTML = `<div class="card"><div class="maze-box" id="mz">${svg()}</div>
+      <div class="pad" role="group" aria-label="Управление корабликом"><button class="up" data-m="U" aria-label="Вверх">↑</button><button class="left" data-m="L" aria-label="Влево">←</button><button class="down" data-m="D" aria-label="Вниз">↓</button><button class="right" data-m="R" aria-label="Вправо">→</button></div>
+      <p class="muted" style="text-align:center">Шагов: ${L.moves.length} · можно также касаться соседней клетки или нажимать стрелки на клавиатуре</p>
+      <button class="btn ghost" id="mreset">Начать сначала</button></div>`;
+    $$('.pad button', stage).forEach(b => b.onclick = () => move(b.dataset.m));
+    $('#mreset', stage).onclick = () => { L.pos = d.start.slice(); L.moves = ''; L.trail = [d.start.slice()]; savePlay(play); draw(); };
+    $('#mz', stage).onclick = e => {
+      const r = $('#mz svg', stage).getBoundingClientRect();
+      const x = Math.floor(((e.clientX - r.left) * (W * CS + PAD * 2) / r.width - PAD) / CS), y = Math.floor(((e.clientY - r.top) * (H * CS + PAD * 2) / r.height - PAD) / CS);
+      const dy = y - L.pos[0], dx = x - L.pos[1];
+      const m = dy === -1 && dx === 0 ? 'U' : dy === 1 && dx === 0 ? 'D' : dx === 1 && dy === 0 ? 'R' : dx === -1 && dy === 0 ? 'L' : null;
+      if (m) move(m);
+    };
+  }
+  function move(m) {
+    if (L.done) return;
+    const [bit, dy, dx] = MOV[m];
+    const v = parseInt(rows[L.pos[0]][L.pos[1]], 16);
+    if (!(v & bit)) { const b = $('#mz', stage); b.classList.remove('wiggle'); void b.offsetWidth; b.classList.add('wiggle'); return; }
+    L.pos = [L.pos[0] + dy, L.pos[1] + dx]; L.moves += m; L.trail.push(L.pos.slice()); savePlay(play);
+    if (L.pos[0] === d.finish[0] && L.pos[1] === d.finish[1]) { L.done = true; draw(); setTimeout(() => finishAttempt({ moves: L.moves }, 'дошли за ' + L.moves.length + ' шагов'), 400); return; }
+    $('#mz', stage).innerHTML = svg();
+    const p = $('.muted', stage); if (p) p.firstChild.textContent = 'Шагов: ' + L.moves.length + ' · можно также касаться соседней клетки или нажимать стрелки на клавиатуре';
+  }
+  const keyH = e => { if (!S.game || S.game.n !== g.n || !$('#mz')) { document.removeEventListener('keydown', keyH); return; } const m = { ArrowUp: 'U', ArrowDown: 'D', ArrowLeft: 'L', ArrowRight: 'R' }[e.key]; if (m) { e.preventDefault(); move(m); } };
+  document.addEventListener('keydown', keyH);
+  draw();
+};
+
+/* 11: танцующие гномики */
+ENGINES.gnomes = function (stage, g) {
+  const list = (g.data && g.data.gnomes) || [];
+  const demo = !list.some(x => x.photo);
+  function draw(sayIdx) {
+    stage.innerHTML = `<div class="card">
+      ${demo ? '<div class="msg warn">ДЕМО-ПЕРСОНАЖИ. Позже здесь будут гномики-сотрудники HR (только с их согласия).</div>' : ''}
+      <div class="gnomes">${list.map((x, i) => `<button class="gnome" data-i="${i}" aria-label="${esc(x.label)}">${gnomeSvg(i, x.photo)}<div class="lb">${esc(x.label)}</div><div class="bubble" ${sayIdx === i || sayIdx === 'all' ? '' : 'hidden'}>${esc(x.phrase)}</div></button>`).join('')}</div>
+      <div class="row" style="margin-top:12px"><button class="btn sec" id="gall">Все вместе!</button><button class="btn" id="gbow">Поклониться в ответ</button></div></div>`;
+    $$('.gnome', stage).forEach(b => b.onclick = () => dance(Number(b.dataset.i)));
+    $('#gall', stage).onclick = () => { draw('all'); $$('.gnome', stage).forEach((b, i) => b.classList.add('dance-' + (list[i].dance || 'sway'))); };
+    $('#gbow', stage).onclick = () => finishAttempt({}, 'посмотрел(а) гномиков');
+  }
+  function dance(i) { draw(i); const b = $$('.gnome', stage)[i]; b.classList.add('dance-' + (list[i].dance || 'sway')); }
+  draw();
+};
+
+/* 12: письмо в бутылке */
+ENGINES.bottle = function (stage, g) {
+  const wishes = (g.data && g.data.wishes) || [];
+  const n = (g.data && g.data.bottles) || 5;
+  const seenKey = pkey('wishes');
+  let opened = null;
+  function pick() {
+    let seen = store.get(seenKey, []);
+    let pool = wishes.map((_, i) => i).filter(i => !seen.includes(i));
+    if (!pool.length) { seen = []; pool = wishes.map((_, i) => i); }
+    const i = pool[Math.floor(Math.random() * pool.length)];
+    seen.push(i); store.set(seenKey, seen);
+    return wishes[i];
+  }
+  function draw() {
+    stage.innerHTML = `<div class="card">
+      <div class="sea">${Array.from({ length: n }, (_, i) => `<button class="bottle ${opened && opened.i === i ? 'opened' : ''}" data-i="${i}" aria-label="Бутылка ${i + 1}">${bottleSvg(i)}</button>`).join('')}</div>
+      ${opened ? `<div class="letter"><div class="beam"></div>${esc(opened.text)}</div><div class="row"><button class="btn" id="bfin">Зажечь огонёк</button><button class="btn sec" id="bmore">Открыть ещё одну</button></div>` : '<p class="muted" style="margin-top:10px">Выберите бутылку.</p>'}
+    </div>`;
+    $$('.bottle', stage).forEach(b => b.onclick = () => { opened = { i: Number(b.dataset.i), text: pick() }; draw(); });
+    const f = $('#bfin', stage); if (f) f.onclick = () => finishAttempt({}, 'открыл(а) письмо');
+    const m = $('#bmore', stage); if (m) m.onclick = () => { opened = null; draw(); };
+  }
+  draw();
+};
+
+/* ================= Глобальные действия ================= */
+function logout() {
+  S.active = null; S.me = null; store.del('active'); ribbons();
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-go],[data-act],[data-slug]');
+  if (!t) return;
+  if (t.dataset.slug) { e.preventDefault(); return go({ name: 'game', slug: t.dataset.slug }); }
+  if (t.dataset.go) { e.preventDefault(); if (t.dataset.go === 'home') refreshInit().then(() => go({ name: 'home' })); else go({ name: t.dataset.go }); return; }
+  const a = t.dataset.act;
+  if (a === 'rules') { show(rulesHtml(false) + '<button class="btn wide" data-go="home">Все огни</button>'); }
+  if (a === 'motion') { S.rm = !S.rm; store.set('rm', S.rm); ribbons(); }
+  if (a === 'flush') flushOutbox().then(() => { if (S.route.name === 'progress') renderProgress(); });
+  if (a === 'refresh') refreshInit().then(renderProgress);
+  if (a === 'again') newAttempt();
+  if (a === 'switch') {
+    const name = S.active ? S.active.name : '';
+    show(`<section class="card"><h2>Сменить участника?</h2><p>Сейчас играет: <b>${esc(name)}</b>.</p><p>Результаты сохранены на сервере. Чтобы вернуться, понадобится личный код${S.me && S.me.code ? ' <b>' + esc(S.me.code) + '</b>' : ''} — запишите его.</p>${S.active && outbox.pendingFor(S.active.pid).length ? '<div class="msg warn">Есть неотправленные результаты — они всё равно отправятся, как только появится связь.</div>' : ''}<div class="row"><button class="btn" id="swYes">Да, это не я</button><button class="btn sec" data-go="home">Отмена</button></div></section>`);
+    $('#swYes').onclick = () => { logout(); go({ name: 'register' }); };
+  }
+});
+$('#btnProgress').onclick = () => refreshInit().then(() => go({ name: 'progress' }, false));
+
+async function refreshInit() {
+  try {
+    const res = await call({ action: 'init', token: S.active && S.active.token }, { tries: 1 });
+    if (res.ok) {
+      S.event = res.event; S.games = res.games;
+      if (res.tokenInvalid) logout(); else S.me = res.me;
+      store.set(pkey('init'), { event: res.event, games: res.games, me: res.me });
+    }
+  } catch (e) {
+    const c = store.get(pkey('init'), null);
+    if (c && !S.games.length) { S.event = c.event; S.games = c.games; S.me = c.me; }
+  }
+  ribbons();
+}
+
+/* ================= Запуск ================= */
+async function boot() {
+  ribbons();
+  if (GAS) {
+    await new Promise(res => { try { google.script.url.getLocation(loc => { const g = loc && loc.parameter && loc.parameter.g; S.route = g ? { name: 'game', slug: String(g).toLowerCase() } : { name: 'home' }; res(); }); } catch (e) { res(); } });
+  } else S.route = parseRoute();
+  try { await refreshInit(); }
+  catch (e) { }
+  if (!S.event && !S.games.length) {
+    if (!GAS && !DEMO && !API_OK) return show(`<div class="card"><h2>Сайт ещё не подключён</h2><p>Организатору: откройте файл index.html и вставьте адрес веб-приложения Apps Script в строку <code>apiUrl</code>. Подробности — в инструкции по запуску.</p></div>`);
+    if (S.route.name !== 'game') return show(`<div class="card"><h2>Нет связи</h2><p>Не получилось связаться с сервером квеста. Проверьте интернет и обновите страницу.</p><button class="btn" onclick="location.reload()">Обновить</button></div>`);
+  }
+  render();
+  flushOutbox();
+}
+window.MAYAK = { S, call, bayScene, flushOutbox, outbox, goGame: slug => go({ name: 'game', slug: String(slug).toLowerCase() }) };
+boot();
+})();
+</script>
+</body>
+</html>
